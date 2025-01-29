@@ -149,7 +149,32 @@ const dummyCustomers = [
         companyName: "Amazon",
         points: "2754",
         tier: "Gold",
-        referralCode: "KH126587"
+        referralCode: "KH126587",
+        segment: "High Value",
+        joinDate: "2023-01-15",
+        lastActive: "2024-01-20",
+        totalSpent: 15420.50,
+        lifetimePoints: 25400,
+        preferences: {
+            categories: ["Food", "Electronics"],
+            communications: ["email", "sms"],
+            favoriteStores: ["KFC", "Apple Store"]
+        },
+        familyMembers: [],
+        tags: ["frequent-buyer", "early-adopter"],
+        notes: "",
+        status: "Active",
+        kycVerified: true,
+        referredBy: null,
+        referralCount: 3,
+        pointsHistory: [
+            {
+                date: "2024-01-20",
+                points: 150,
+                type: "Earned",
+                source: "Purchase"
+            }
+        ]
     },
     {
         id: 2,

@@ -11,6 +11,7 @@ import {
 import useStore from "../store/useStore";
 import AddCustomerModal from "../components/AddCustomerModal";
 import EditCustomerModal from "../components/EditCustomerModal";
+import { Link } from "react-router-dom";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -234,13 +235,13 @@ const Customers = () => {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {customer.referralCode}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <button
-                    onClick={() => setEditingCustomer(customer)}
-                    className="text-green-600 hover:text-green-700 p-1 rounded-lg hover:bg-green-50"
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <Link
+                    to={`/customers/${customer.id}`}
+                    className="text-green-600 hover:text-green-700"
                   >
-                    <PencilIcon className="w-4 h-4" />
-                  </button>
+                    View Profile
+                  </Link>
                 </td>
               </tr>
             ))}

@@ -13,6 +13,7 @@ import Brands from "./pages/Brands";
 import Offers from "./pages/Offers";
 import Tiers from "./pages/Tiers";
 import Login from "./pages/Login";
+import CustomerDetailsPage from "./pages/CustomerDetailsPage";
 import useStore from "./store/useStore";
 
 const App = () => {
@@ -126,6 +127,7 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
+            <Route path="/customers/:id" element={<CustomerDetailsPage />} />
           </Routes>
         </main>
       </div>

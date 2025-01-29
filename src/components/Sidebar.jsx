@@ -12,6 +12,7 @@ import {
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
   ArrowRightOnRectangleIcon,
+  UsersIcon,
 } from "@heroicons/react/24/outline";
 import useStore from "../store/useStore";
 
@@ -23,7 +24,17 @@ const navItems = [
     icon: CurrencyDollarIcon,
   },
   { path: "/transactions", name: "Transactions", icon: ArrowPathIcon },
-  { path: "/customers", name: "Customers", icon: UserGroupIcon },
+  {
+    name: "Customers",
+    path: "/customers",
+    icon: UsersIcon,
+    submenu: [
+      { name: "All Customers", path: "/customers" },
+      { name: "VIP Customers", path: "/customers?segment=vip" },
+      { name: "At Risk", path: "/customers?segment=at-risk" },
+      { name: "New Customers", path: "/customers?segment=new" },
+    ],
+  },
   { path: "/apps", name: "Apps", icon: DevicePhoneMobileIcon },
   { path: "/categories", name: "Categories", icon: TagIcon },
   { path: "/brands", name: "Brands", icon: BuildingStorefrontIcon },
@@ -48,7 +59,11 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     >
       <div className="flex flex-col h-full">
         <div className="flex items-center justify-between p-4 border-b border-green-700/50">
-          <div className={`flex items-center ${!isOpen && "justify-center w-full"}`}>
+          <div
+            className={`flex items-center ${
+              !isOpen && "justify-center w-full"
+            }`}
+          >
             <img
               src="/logo.svg"
               alt="Khedmah"

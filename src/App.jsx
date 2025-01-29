@@ -14,7 +14,9 @@ import Offers from "./pages/Offers";
 import Tiers from "./pages/Tiers";
 import Login from "./pages/Login";
 import CustomerDetailsPage from "./pages/CustomerDetailsPage";
+import Privacy from "./pages/Privacy";
 import useStore from "./store/useStore";
+import Users from "./pages/Users";
 
 const App = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -128,6 +130,26 @@ const App = () => {
               }
             />
             <Route path="/customers/:id" element={<CustomerDetailsPage />} />
+            <Route
+              path="/privacy"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Privacy />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/users"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Users />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </main>
       </div>

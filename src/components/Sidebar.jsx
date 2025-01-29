@@ -13,6 +13,8 @@ import {
   ChevronDoubleRightIcon,
   ArrowRightOnRectangleIcon,
   UsersIcon,
+  ShieldCheckIcon,
+  UserIcon,
 } from "@heroicons/react/24/outline";
 import useStore from "../store/useStore";
 
@@ -40,6 +42,16 @@ const navItems = [
   { path: "/brands", name: "Brands", icon: BuildingStorefrontIcon },
   { path: "/offers", name: "Offers", icon: TicketIcon },
   { path: "/tiers", name: "Tiers", icon: TrophyIcon },
+  {
+    path: "/privacy",
+    name: "Privacy & Security",
+    icon: ShieldCheckIcon,
+  },
+  {
+    path: "/users",
+    name: "Users",
+    icon: UserIcon,
+  },
 ];
 
 const Sidebar = ({ isOpen, setIsOpen }) => {

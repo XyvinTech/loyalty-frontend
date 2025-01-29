@@ -80,6 +80,11 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           path: "/tiers",
           icon: TrophyIcon,
         },
+        {
+          label: "Referral Program",
+          path: "/points/referrals",
+          icon: UserGroupIcon,
+        },
       ],
     },
     {

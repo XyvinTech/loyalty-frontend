@@ -31,6 +31,7 @@ import PointTransactions from "./pages/audit/PointTransactions";
 import AdminActions from "./pages/audit/AdminActions";
 import SystemLogs from "./pages/audit/SystemLogs";
 import ApiLogs from "./pages/audit/ApiLogs";
+import ReferralProgram from "./pages/points/ReferralProgram";
 
 const App = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -302,6 +303,16 @@ const App = () => {
                 <ProtectedRoute>
                   <Layout>
                     <ApiLogs />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/points/referrals"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ReferralProgram />
                   </Layout>
                 </ProtectedRoute>
               }

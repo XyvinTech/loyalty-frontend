@@ -4,11 +4,13 @@ import {
   CalendarIcon,
   FunnelIcon,
 } from "@heroicons/react/24/outline";
+import ChannelReports from "../components/reports/ChannelReports";
 
 const Reports = () => {
   const [selectedReport, setSelectedReport] = useState("transactions");
   const [dateRange, setDateRange] = useState("last_30");
   const [filters, setFilters] = useState({});
+  const [activeTab, setActiveTab] = useState("overview");
 
   const reportTypes = [
     {
@@ -41,6 +43,14 @@ const Reports = () => {
       description: "Customer segmentation and behavior analysis",
       filters: ["date_range", "segment", "tier"],
     },
+  ];
+
+  const tabs = [
+    { name: "Overview", value: "overview" },
+    { name: "Points", value: "points" },
+    { name: "Channels", value: "channels" },
+    { name: "Customers", value: "customers" },
+    { name: "Merchants", value: "merchants" },
   ];
 
   return (
@@ -88,6 +98,29 @@ const Reports = () => {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="mt-8">
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg font-medium text-gray-900">Reports</h2>
+          <div className="flex items-center gap-4">
+            {tabs.map((tab) => (
+              <button
+                key={tab.value}
+                onClick={() => setActiveTab(tab.value)}
+                className={`text-sm border-b-2 ${
+                  activeTab === tab.value
+                    ? "border-green-500"
+                    : "border-transparent"
+                }`}
+              >
+                {tab.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {activeTab === "channels" && <ChannelReports />}
       </div>
     </div>
   );

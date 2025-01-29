@@ -13,16 +13,16 @@ const DUMMY_TIERS = [
   { id: "platinum", name: "Platinum Tier" },
 ];
 
-const AddOfferModal = ({ isOpen, onClose }) => {
+const AddOfferModal = ({ isOpen, onClose, editingOffer }) => {
   const addOffer = useStore((state) => state.addOffer);
+  const updateOffer = useStore((state) => state.updateOffer);
 
   if (!isOpen) return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const newOffer = {
-      id: Date.now(),
+    const offerData = {
       title: formData.get("title"),
       icon: formData.get("icon"),
       discountCode: formData.get("discountCode"),
@@ -33,7 +33,12 @@ const AddOfferModal = ({ isOpen, onClose }) => {
       validFrom: formData.get("validFrom"),
       validTo: formData.get("validTo"),
     };
-    addOffer(newOffer);
+
+    if (editingOffer) {
+      updateOffer({ ...offerData, id: editingOffer.id });
+    } else {
+      addOffer({ ...offerData, id: Date.now() });
+    }
     onClose();
   };
 
@@ -41,7 +46,9 @@ const AddOfferModal = ({ isOpen, onClose }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg w-full max-w-md p-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-gray-900">Add Discount</h2>
+          <h2 className="text-xl font-semibold text-gray-900">
+            {editingOffer ? "Edit Discount" : "Add Discount"}
+          </h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-500"
@@ -60,6 +67,7 @@ const AddOfferModal = ({ isOpen, onClose }) => {
               name="title"
               placeholder="Enter Title"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              defaultValue={editingOffer?.title}
             />
           </div>
 
@@ -72,6 +80,7 @@ const AddOfferModal = ({ isOpen, onClose }) => {
               name="icon"
               placeholder="Upload Icon"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              defaultValue={editingOffer?.icon}
             />
           </div>
 
@@ -84,6 +93,7 @@ const AddOfferModal = ({ isOpen, onClose }) => {
               name="discountCode"
               placeholder="Enter Discount Code"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              defaultValue={editingOffer?.discountCode}
             />
           </div>
 
@@ -96,6 +106,7 @@ const AddOfferModal = ({ isOpen, onClose }) => {
               placeholder="Enter Description"
               rows="3"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              defaultValue={editingOffer?.description}
             ></textarea>
           </div>
 
@@ -108,6 +119,7 @@ const AddOfferModal = ({ isOpen, onClose }) => {
               name="percentage"
               placeholder="Enter Percentage"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              defaultValue={editingOffer?.percentage}
             />
           </div>
 
@@ -118,6 +130,7 @@ const AddOfferModal = ({ isOpen, onClose }) => {
             <select
               name="tierRequired"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              defaultValue={editingOffer?.tierRequired}
             >
               <option value="">Select tier</option>
               {DUMMY_TIERS.map((tier) => (
@@ -135,6 +148,7 @@ const AddOfferModal = ({ isOpen, onClose }) => {
             <select
               name="app"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              defaultValue={editingOffer?.app}
             >
               <option value="">Select app</option>
               {DUMMY_APPS.map((app) => (
@@ -154,6 +168,7 @@ const AddOfferModal = ({ isOpen, onClose }) => {
                 type="date"
                 name="validFrom"
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                defaultValue={editingOffer?.validFrom}
               />
             </div>
             <div>
@@ -164,6 +179,7 @@ const AddOfferModal = ({ isOpen, onClose }) => {
                 type="date"
                 name="validTo"
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                defaultValue={editingOffer?.validTo}
               />
             </div>
           </div>
@@ -180,7 +196,7 @@ const AddOfferModal = ({ isOpen, onClose }) => {
               type="submit"
               className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700"
             >
-              Add
+              {editingOffer ? "Save Changes" : "Add"}
             </button>
           </div>
         </form>

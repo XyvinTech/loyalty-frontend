@@ -115,6 +115,13 @@ const useStore = create((set) => ({
     // Tiers State
     tiers: [],
     setTiers: (tiers) => set({ tiers }),
+
+    updateOffer: (updatedOffer) =>
+        set((state) => ({
+            offers: state.offers.map((offer) =>
+                offer.id === updatedOffer.id ? updatedOffer : offer
+            ),
+        })),
 }))
 
 export default useStore 

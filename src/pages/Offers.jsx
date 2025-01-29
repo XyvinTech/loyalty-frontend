@@ -3,6 +3,7 @@ import {
   MagnifyingGlassIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  ChevronUpDownIcon,
 } from "@heroicons/react/24/outline";
 import useStore from "../store/useStore";
 import AddOfferModal from "../components/AddOfferModal";
@@ -13,21 +14,69 @@ const Offers = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const { offers } = useStore();
+  const [sortConfig, setSortConfig] = useState({
+    key: "brandName",
+    direction: "asc",
+  });
+  const [editingOffer, setEditingOffer] = useState(null);
+  const { offers, updateOffer } = useStore();
 
-  // Filter offers based on search term
-  const filteredOffers = offers.filter(
-    (offer) =>
-      offer.brandName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      offer.code.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleSort = (key) => {
+    setSortConfig({
+      key,
+      direction:
+        sortConfig.key === key && sortConfig.direction === "asc"
+          ? "desc"
+          : "asc",
+    });
+  };
+
+  // Sort and filter offers
+  const sortedAndFilteredOffers = [...offers]
+    .filter(
+      (offer) =>
+        offer.brandName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        offer.code.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sortConfig.direction === "asc") {
+        return a[sortConfig.key] > b[sortConfig.key] ? 1 : -1;
+      }
+      return a[sortConfig.key] < b[sortConfig.key] ? 1 : -1;
+    });
 
   // Calculate pagination
-  const totalPages = Math.ceil(filteredOffers.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(sortedAndFilteredOffers.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedOffers = filteredOffers.slice(
+  const paginatedOffers = sortedAndFilteredOffers.slice(
     startIndex,
     startIndex + ITEMS_PER_PAGE
+  );
+
+  const handleEdit = (offer) => {
+    setEditingOffer(offer);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setEditingOffer(null);
+    setIsModalOpen(false);
+  };
+
+  const SortableHeader = ({ label, sortKey }) => (
+    <th
+      className="text-left p-4 text-sm font-medium text-gray-600 cursor-pointer group hover:bg-gray-50"
+      onClick={() => handleSort(sortKey)}
+    >
+      <div className="flex items-center gap-2">
+        {label}
+        <ChevronUpDownIcon
+          className={`w-4 h-4 text-gray-400 group-hover:text-gray-600 ${
+            sortConfig.key === sortKey ? "text-green-600" : ""
+          }`}
+        />
+      </div>
+    </th>
   );
 
   return (
@@ -62,27 +111,18 @@ const Offers = () => {
         <table className="min-w-full">
           <thead>
             <tr className="border-b">
-              <th className="text-left p-4 text-sm font-medium text-gray-600">
-                Brand Name
-              </th>
+              <SortableHeader label="Brand Name" sortKey="brandName" />
               <th className="text-left p-4 text-sm font-medium text-gray-600">
                 Logo
               </th>
-              <th className="text-left p-4 text-sm font-medium text-gray-600">
-                Code
-              </th>
-              <th className="text-left p-4 text-sm font-medium text-gray-600">
-                PIN
-              </th>
-              <th className="text-left p-4 text-sm font-medium text-gray-600">
-                Points Required
-              </th>
-              <th className="text-left p-4 text-sm font-medium text-gray-600">
-                Starts on
-              </th>
-              <th className="text-left p-4 text-sm font-medium text-gray-600">
-                Ends on
-              </th>
+              <SortableHeader label="Code" sortKey="code" />
+              <SortableHeader label="PIN" sortKey="pin" />
+              <SortableHeader
+                label="Points Required"
+                sortKey="pointsRequired"
+              />
+              <SortableHeader label="Starts on" sortKey="startDate" />
+              <SortableHeader label="Ends on" sortKey="endDate" />
               <th className="text-left p-4 text-sm font-medium text-gray-600">
                 Actions
               </th>
@@ -92,9 +132,9 @@ const Offers = () => {
             {paginatedOffers.map((offer, index) => (
               <tr
                 key={offer.id}
-                className={
+                className={`${
                   index !== paginatedOffers.length - 1 ? "border-b" : ""
-                }
+                } hover:bg-gray-50`}
               >
                 <td className="p-4 text-sm text-gray-900">{offer.brandName}</td>
                 <td className="p-4">
@@ -112,7 +152,10 @@ const Offers = () => {
                 <td className="p-4 text-sm text-gray-900">{offer.startDate}</td>
                 <td className="p-4 text-sm text-gray-900">{offer.endDate}</td>
                 <td className="p-4">
-                  <button className="text-green-600 hover:text-green-700">
+                  <button
+                    onClick={() => handleEdit(offer)}
+                    className="text-green-600 hover:text-green-700 font-medium"
+                  >
                     Edit
                   </button>
                 </td>
@@ -126,8 +169,11 @@ const Offers = () => {
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-700">
               Showing {startIndex + 1} to{" "}
-              {Math.min(startIndex + ITEMS_PER_PAGE, filteredOffers.length)} of{" "}
-              {filteredOffers.length} results
+              {Math.min(
+                startIndex + ITEMS_PER_PAGE,
+                sortedAndFilteredOffers.length
+              )}{" "}
+              of {sortedAndFilteredOffers.length} results
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -172,7 +218,8 @@ const Offers = () => {
 
       <AddOfferModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleCloseModal}
+        editingOffer={editingOffer}
       />
     </div>
   );

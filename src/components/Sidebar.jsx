@@ -9,8 +9,6 @@ import {
   BuildingStorefrontIcon,
   TicketIcon,
   TrophyIcon,
-  ChevronDoubleLeftIcon,
-  ChevronDoubleRightIcon,
   ArrowRightOnRectangleIcon,
   UsersIcon,
   ShieldCheckIcon,
@@ -19,19 +17,17 @@ import {
   ChevronRightIcon,
   Cog6ToothIcon,
   ChatBubbleLeftRightIcon,
-  ExclamationCircleIcon,
   DocumentChartBarIcon,
   BellIcon,
   CodeBracketIcon,
   EnvelopeIcon,
-  ClipboardDocumentListIcon,
   CommandLineIcon,
   AdjustmentsHorizontalIcon,
 } from "@heroicons/react/24/outline";
 import useStore from "../store/useStore";
 import { useState } from "react";
 
-const Sidebar = ({ isOpen, setIsOpen }) => {
+const Sidebar = () => {
   const navigate = useNavigate();
   const logout = useStore((state) => state.logout);
   const [expandedMenus, setExpandedMenus] = useState({
@@ -250,45 +246,19 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   ];
 
   return (
-    <aside
-      className={`fixed top-0 left-0 h-screen bg-[#2B5C3F] transition-all duration-200 ${
-        isOpen ? "w-64" : "w-20"
-      } shadow-xl z-30`}
-    >
+    <aside className="fixed inset-y-0 left-0 w-64 bg-[#2B5C3F] shadow-xl z-30">
       <div className="flex flex-col h-full">
-        <div className="flex items-center justify-between p-4 border-b border-green-700/50">
-          <div
-            className={`flex items-center ${
-              !isOpen && "justify-center w-full"
-            }`}
-          >
+        <div className="flex items-center p-4 border-b border-green-700/50">
+          <div className="flex items-center">
             <img
               src="/logo.svg"
               alt="Khedmah"
-              className="h-8 transition-transform duration-200 hover:scale-105"
+              className="h-8 w-auto transition-transform duration-200 hover:scale-105"
             />
-            {isOpen && (
-              <span className="ml-3 text-white text-lg font-semibold tracking-wide">
-                Khedmah
-              </span>
-            )}
+            {/* <span className="ml-3 text-white text-lg font-semibold tracking-wide">
+              KhedmaK
+            </span> */}
           </div>
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className={`text-white/80 hover:text-white transition-colors ${
-              !isOpen && "hidden"
-            }`}
-          >
-            <ChevronDoubleLeftIcon className="w-5 h-5" />
-          </button>
-          {!isOpen && (
-            <button
-              onClick={() => setIsOpen(true)}
-              className="absolute -right-3 top-9 bg-white rounded-full p-1 shadow-lg hover:shadow-xl hover:bg-gray-50 transition-all duration-200"
-            >
-              <ChevronDoubleRightIcon className="w-4 h-4 text-green-700" />
-            </button>
-          )}
         </div>
 
         <nav className="flex-1 overflow-y-auto py-4">
@@ -301,18 +271,17 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                     item.isExpanded
                       ? "text-white bg-green-700/90"
                       : "text-gray-300 hover:bg-green-700/50 hover:text-white"
-                  } ${!isOpen && "justify-center"}`}
+                  }`}
                 >
                   <div className="flex items-center gap-3">
                     <item.icon className="w-5 h-5" />
-                    {isOpen && item.label}
+                    {item.label}
                   </div>
-                  {isOpen &&
-                    (item.isExpanded ? (
-                      <ChevronDownIcon className="w-4 h-4" />
-                    ) : (
-                      <ChevronRightIcon className="w-4 h-4" />
-                    ))}
+                  {item.isExpanded ? (
+                    <ChevronDownIcon className="w-4 h-4" />
+                  ) : (
+                    <ChevronRightIcon className="w-4 h-4" />
+                  )}
                 </button>
 
                 {item.isExpanded && (
@@ -345,11 +314,11 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                     isActive
                       ? "text-white bg-green-700/90 border-r-4 border-white"
                       : "text-gray-300 hover:bg-green-700/50 hover:text-white"
-                  } ${!isOpen && "justify-center"}`
+                  }`
                 }
               >
                 <item.icon className="w-5 h-5 flex-shrink-0" />
-                {isOpen && <span className="ml-3">{item.name}</span>}
+                <span className="ml-3">{item.name}</span>
               </NavLink>
             )
           )}
@@ -357,12 +326,10 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
         <button
           onClick={handleLogout}
-          className={`flex items-center px-4 py-4 text-sm font-medium text-gray-300 hover:bg-green-700/50 hover:text-white transition-colors border-t border-green-700/50 ${
-            !isOpen && "justify-center"
-          }`}
+          className="flex items-center px-4 py-4 text-sm font-medium text-gray-300 hover:bg-green-700/50 hover:text-white transition-colors border-t border-green-700/50"
         >
           <ArrowRightOnRectangleIcon className="w-5 h-5" />
-          {isOpen && <span className="ml-3">Logout</span>}
+          <span className="ml-3">Logout</span>
         </button>
       </div>
     </aside>

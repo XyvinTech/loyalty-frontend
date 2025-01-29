@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { XMarkIcon, PlusIcon, MinusIcon } from "@heroicons/react/24/outline";
 import useStore from "../store/useStore";
 
-const AddTierModal = ({ isOpen, onClose, onSuccess }) => {
+const EditTierModal = ({ isOpen, onClose, tier, onSuccess }) => {
   const [formData, setFormData] = useState({
     name: "",
     pointsRequired: "",
@@ -11,17 +11,28 @@ const AddTierModal = ({ isOpen, onClose, onSuccess }) => {
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const addTier = useStore((state) => state.addTier);
+  const updateTier = useStore((state) => state.updateTier);
+
+  useEffect(() => {
+    if (tier) {
+      setFormData({
+        name: tier.name,
+        pointsRequired: tier.pointsRequired,
+        benefits: [...tier.benefits],
+        status: tier.status,
+      });
+    }
+  }, [tier]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await addTier(formData);
+      await updateTier({ ...tier, ...formData });
       onSuccess();
       onClose();
     } catch (error) {
-      setErrors({ submit: "Failed to add tier" });
+      setErrors({ submit: "Failed to update tier" });
     } finally {
       setIsLoading(false);
     }
@@ -64,7 +75,7 @@ const AddTierModal = ({ isOpen, onClose, onSuccess }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg w-full max-w-md p-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-gray-900">Add New Tier</h2>
+          <h2 className="text-xl font-semibold text-gray-900">Edit Tier</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-500"
@@ -196,10 +207,10 @@ const AddTierModal = ({ isOpen, onClose, onSuccess }) => {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  <span>Adding...</span>
+                  <span>Saving...</span>
                 </>
               ) : (
-                "Add Tier"
+                "Save Changes"
               )}
             </button>
           </div>
@@ -209,4 +220,4 @@ const AddTierModal = ({ isOpen, onClose, onSuccess }) => {
   );
 };
 
-export default AddTierModal;
+export default EditTierModal;

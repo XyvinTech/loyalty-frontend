@@ -139,6 +139,142 @@ const dummyApps = [
     }
 ];
 
+const dummyCustomers = [
+    {
+        id: 1,
+        name: "John White",
+        customerId: "KH12345",
+        email: "john.white@gmail.com",
+        phone: "874362734",
+        companyName: "Amazon",
+        points: "2754",
+        tier: "Gold",
+        referralCode: "KH126587"
+    },
+    {
+        id: 2,
+        name: "Sarah Brown",
+        customerId: "KH12346",
+        email: "sarah.brown@gmail.com",
+        phone: "874362735",
+        companyName: "Microsoft",
+        points: "1500",
+        tier: "Silver",
+        referralCode: "KH126588"
+    },
+    {
+        id: 3,
+        name: "Mike Johnson",
+        customerId: "KH12347",
+        email: "mike.j@gmail.com",
+        phone: "874362736",
+        companyName: "Google",
+        points: "3500",
+        tier: "Platinum",
+        referralCode: "KH126589"
+    },
+    {
+        id: 4,
+        name: "Emily Davis",
+        customerId: "KH12348",
+        email: "emily.d@gmail.com",
+        phone: "874362737",
+        companyName: "Apple",
+        points: "2000",
+        tier: "Gold",
+        referralCode: "KH126590"
+    },
+    {
+        id: 5,
+        name: "Alex Wilson",
+        customerId: "KH12349",
+        email: "alex.w@gmail.com",
+        phone: "874362738",
+        companyName: "Netflix",
+        points: "1000",
+        tier: "Silver",
+        referralCode: "KH126591"
+    }
+];
+
+const dummyTiers = [
+    {
+        id: 1,
+        name: "Silver",
+        pointsRequired: 1000,
+        benefits: [
+            "10% discount on all purchases",
+            "Free delivery on orders above $50",
+            "Early access to sales"
+        ],
+        status: "Active"
+    },
+    {
+        id: 2,
+        name: "Gold",
+        pointsRequired: 5000,
+        benefits: [
+            "15% discount on all purchases",
+            "Free delivery on all orders",
+            "Priority customer support",
+            "Exclusive event invitations"
+        ],
+        status: "Active"
+    },
+    {
+        id: 3,
+        name: "Platinum",
+        pointsRequired: 10000,
+        benefits: [
+            "20% discount on all purchases",
+            "Free delivery and priority shipping",
+            "24/7 VIP customer support",
+            "Exclusive event invitations",
+            "Birthday rewards"
+        ],
+        status: "Active"
+    }
+];
+
+const dummyTransactions = [
+    {
+        id: 1,
+        customerId: "KH12345",
+        customerName: "John White",
+        type: "Purchase",
+        amount: 150.00,
+        points: 150,
+        status: "Completed",
+        date: "2024-01-20",
+        merchant: "KFC",
+        description: "Food order"
+    },
+    {
+        id: 2,
+        customerId: "KH12346",
+        customerName: "Sarah Brown",
+        type: "Redemption",
+        amount: 50.00,
+        points: -50,
+        status: "Completed",
+        date: "2024-01-19",
+        merchant: "McDonald's",
+        description: "Discount redemption"
+    },
+    {
+        id: 3,
+        customerId: "KH12347",
+        customerName: "Mike Johnson",
+        type: "Refund",
+        amount: 75.00,
+        points: -75,
+        status: "Pending",
+        date: "2024-01-18",
+        merchant: "Pizza Hut",
+        description: "Order cancellation"
+    }
+];
+
 const useStore = create((set) => ({
     // Points Criteria State
     pointsCriteria: [],
@@ -148,12 +284,38 @@ const useStore = create((set) => ({
     })),
 
     // Transactions State
-    transactions: [],
+    transactions: dummyTransactions,
     setTransactions: (transactions) => set({ transactions }),
+    addTransaction: (transaction) =>
+        set((state) => ({
+            transactions: [
+                { ...transaction, id: state.transactions.length + 1 },
+                ...state.transactions
+            ]
+        })),
+    updateTransaction: (updatedTransaction) =>
+        set((state) => ({
+            transactions: state.transactions.map((transaction) =>
+                transaction.id === updatedTransaction.id ? updatedTransaction : transaction
+            )
+        })),
 
     // Customers State
-    customers: [],
+    customers: dummyCustomers,
     setCustomers: (customers) => set({ customers }),
+    addCustomer: (customer) =>
+        set((state) => ({
+            customers: [
+                ...state.customers,
+                {
+                    ...customer,
+                    id: state.customers.length + 1,
+                    name: customer.email.split("@")[0],
+                    customerId: `KH${Math.floor(Math.random() * 100000)}`,
+                    tier: "Silver"
+                }
+            ]
+        })),
 
     // Apps State
     apps: dummyApps,
@@ -179,8 +341,25 @@ const useStore = create((set) => ({
     setOffers: (offers) => set({ offers }),
 
     // Tiers State
-    tiers: [],
+    tiers: dummyTiers,
     setTiers: (tiers) => set({ tiers }),
+    addTier: (tier) =>
+        set((state) => ({
+            tiers: [
+                ...state.tiers,
+                { ...tier, id: state.tiers.length + 1 }
+            ]
+        })),
+    updateTier: (updatedTier) =>
+        set((state) => ({
+            tiers: state.tiers.map((tier) =>
+                tier.id === updatedTier.id ? updatedTier : tier
+            )
+        })),
+    deleteTier: (tierId) =>
+        set((state) => ({
+            tiers: state.tiers.filter((tier) => tier.id !== tierId)
+        })),
 
     updateOffer: (updatedOffer) =>
         set((state) => ({
@@ -223,6 +402,20 @@ const useStore = create((set) => ({
     logout: () => {
         set({ isAuthenticated: false });
     },
+    deleteCustomer: (customerId) =>
+        set((state) => ({
+            customers: state.customers.filter((customer) => customer.id !== customerId)
+        })),
+    bulkDeleteCustomers: (customerIds) =>
+        set((state) => ({
+            customers: state.customers.filter((customer) => !customerIds.includes(customer.id))
+        })),
+    updateCustomer: (updatedCustomer) =>
+        set((state) => ({
+            customers: state.customers.map((customer) =>
+                customer.id === updatedCustomer.id ? updatedCustomer : customer
+            )
+        })),
 }))
 
 export default useStore 

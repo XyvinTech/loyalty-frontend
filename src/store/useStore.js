@@ -420,13 +420,21 @@ const useStore = create((set) => ({
             brands: state.brands.filter((brand) => brand.id !== brandId)
         })),
 
-    isAuthenticated: false,
-    login: (credentials) => {
-        set({ isAuthenticated: true });
+    isAuthenticated: localStorage.getItem("isAuthenticated") === "true",
+    user: JSON.parse(localStorage.getItem("user") || "null"),
+
+    login: (userData) => {
+        localStorage.setItem("isAuthenticated", "true");
+        localStorage.setItem("user", JSON.stringify(userData));
+        set({ isAuthenticated: true, user: userData });
     },
+
     logout: () => {
-        set({ isAuthenticated: false });
+        localStorage.removeItem("isAuthenticated");
+        localStorage.removeItem("user");
+        set({ isAuthenticated: false, user: null });
     },
+
     deleteCustomer: (customerId) =>
         set((state) => ({
             customers: state.customers.filter((customer) => customer.id !== customerId)

@@ -11,6 +11,7 @@ import DataRetentionModal from "../components/privacy/DataRetentionModal";
 import GDPRConsentModal from "../components/privacy/GDPRConsentModal";
 import RoleManagementModal from "../components/privacy/RoleManagementModal";
 import RoleAuditLog from "../components/privacy/RoleAuditLog";
+import RoleHistoryLog from "../components/privacy/RoleHistoryLog";
 
 const Privacy = () => {
   const [activeModal, setActiveModal] = useState(null);
@@ -104,6 +105,31 @@ const Privacy = () => {
     },
   ]);
 
+  // Add role history state
+  const [roleHistory, setRoleHistory] = useState([
+    {
+      id: 1,
+      timestamp: new Date().toISOString(),
+      changedBy: "admin@example.com",
+      action: "created",
+      details: "Created new role: Store Manager",
+    },
+    {
+      id: 2,
+      timestamp: new Date(Date.now() - 86400000).toISOString(),
+      changedBy: "admin@example.com",
+      action: "updated",
+      details: "Updated permissions for Customer Service role",
+    },
+    {
+      id: 3,
+      timestamp: new Date(Date.now() - 172800000).toISOString(),
+      changedBy: "admin@example.com",
+      action: "deleted",
+      details: "Deleted role: Temporary Role",
+    },
+  ]);
+
   // Add audit log creation function
   const createAuditLog = (action, roleName, details) => {
     const newLog = {
@@ -119,53 +145,50 @@ const Privacy = () => {
 
   const handleAddRole = (newRole) => {
     setRoles((prev) => [...prev, { ...newRole, users: [] }]);
-    createAuditLog(
-      "created",
-      newRole.name,
-      `Created new role with permissions: ${newRole.permissions.join(", ")}`
-    );
+    setRoleHistory((prev) => [
+      {
+        id: Date.now(),
+        timestamp: new Date().toISOString(),
+        changedBy: "admin@example.com", // Replace with actual logged-in user
+        action: "created",
+        details: `Created new role: ${newRole.name}`,
+      },
+      ...prev,
+    ]);
   };
 
   const handleUpdateRole = (updatedRole) => {
     setRoles((prev) =>
       prev.map((role) => (role.name === updatedRole.name ? updatedRole : role))
     );
-    createAuditLog(
-      "updated",
-      updatedRole.name,
-      `Updated role permissions and settings`
-    );
+    setRoleHistory((prev) => [
+      {
+        id: Date.now(),
+        timestamp: new Date().toISOString(),
+        changedBy: "admin@example.com",
+        action: "updated",
+        details: `Updated role: ${updatedRole.name}`,
+      },
+      ...prev,
+    ]);
   };
 
   const handleCloneRole = (clonedRole) => {
     setRoles((prev) => [...prev, clonedRole]);
   };
 
-  const handleDeleteRole = (roleToDelete, reassignTo) => {
-    if (reassignTo) {
-      const targetRole = roles.find((r) => r.name === reassignTo);
-      const updatedTargetRole = {
-        ...targetRole,
-        users: [...targetRole.users, ...roleToDelete.users],
-      };
-      setRoles((prev) =>
-        prev
-          .filter((r) => r.name !== roleToDelete.name)
-          .map((r) => (r.name === reassignTo ? updatedTargetRole : r))
-      );
-      createAuditLog(
-        "deleted",
-        roleToDelete.name,
-        `Deleted role and reassigned ${roleToDelete.users.length} users to ${reassignTo}`
-      );
-    } else {
-      setRoles((prev) => prev.filter((r) => r.name !== roleToDelete.name));
-      createAuditLog(
-        "deleted",
-        roleToDelete.name,
-        `Deleted role with no user reassignment`
-      );
-    }
+  const handleDeleteRole = (roleName) => {
+    setRoles((prev) => prev.filter((role) => role.name !== roleName));
+    setRoleHistory((prev) => [
+      {
+        id: Date.now(),
+        timestamp: new Date().toISOString(),
+        changedBy: "admin@example.com",
+        action: "deleted",
+        details: `Deleted role: ${roleName}`,
+      },
+      ...prev,
+    ]);
   };
 
   const privacySettings = [
@@ -327,6 +350,9 @@ const Privacy = () => {
 
       {/* Role Audit Log */}
       <RoleAuditLog auditLogs={roleAuditLogs} />
+
+      {/* Role History Log */}
+      <RoleHistoryLog history={roleHistory} />
 
       {/* Modals */}
       <DataRetentionModal

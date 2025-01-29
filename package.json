@@ -12,6 +12,7 @@
   "dependencies": {
     "@heroicons/react": "^2.1.1",
     "chart.js": "^4.4.7",
+    "date-fns": "^4.1.0",
     "khedmah-loyalty-frontend": "file:",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.3.0",

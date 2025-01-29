@@ -24,6 +24,8 @@ import {
   BellIcon,
   CodeBracketIcon,
   EnvelopeIcon,
+  ClipboardDocumentListIcon,
+  CommandLineIcon,
 } from "@heroicons/react/24/outline";
 import useStore from "../store/useStore";
 import { useState } from "react";
@@ -37,6 +39,9 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     support: false,
     communications: false,
     sdk: false,
+    audit: false,
+    points: false,
+    customers: false,
   });
 
   const handleLogout = () => {
@@ -54,15 +59,47 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   const navItems = [
     { path: "/dashboard", name: "Dashboard", icon: ChartBarIcon },
     {
-      path: "/points-criteria",
-      name: "Points Criteria",
+      type: "dropdown",
+      label: "Points Management",
       icon: CurrencyDollarIcon,
+      isExpanded: expandedMenus.points,
+      onClick: () => toggleMenu("points"),
+      subItems: [
+        {
+          label: "Points Criteria",
+          path: "/points-criteria",
+          icon: CurrencyDollarIcon,
+        },
+        {
+          label: "Transactions",
+          path: "/transactions",
+          icon: ArrowPathIcon,
+        },
+        {
+          label: "Tiers",
+          path: "/tiers",
+          icon: TrophyIcon,
+        },
+      ],
     },
-    { path: "/transactions", name: "Transactions", icon: ArrowPathIcon },
     {
-      name: "Customers",
-      path: "/customers",
+      type: "dropdown",
+      label: "Customer Management",
       icon: UsersIcon,
+      isExpanded: expandedMenus.customers,
+      onClick: () => toggleMenu("customers"),
+      subItems: [
+        {
+          label: "Customers",
+          path: "/customers",
+          icon: UserGroupIcon,
+        },
+        {
+          label: "Support",
+          path: "/support",
+          icon: ChatBubbleLeftRightIcon,
+        },
+      ],
     },
     {
       type: "dropdown",
@@ -71,11 +108,6 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       isExpanded: expandedMenus.masterData,
       onClick: () => toggleMenu("masterData"),
       subItems: [
-        {
-          label: "Tiers",
-          path: "/tiers",
-          icon: TrophyIcon,
-        },
         {
           label: "Categories",
           path: "/categories",
@@ -95,7 +127,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     },
     {
       type: "dropdown",
-      label: "Offers",
+      label: "Offers & Promotions",
       icon: TagIcon,
       isExpanded: expandedMenus.offers,
       onClick: () => toggleMenu("offers"),
@@ -111,26 +143,6 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           icon: TagIcon,
         },
       ],
-    },
-    {
-      path: "/support",
-      name: "Customer Support",
-      icon: ChatBubbleLeftRightIcon,
-    },
-    {
-      path: "/reports",
-      name: "Reports",
-      icon: DocumentChartBarIcon,
-    },
-    {
-      path: "/privacy",
-      name: "Privacy & Security",
-      icon: ShieldCheckIcon,
-    },
-    {
-      path: "/users",
-      name: "Users",
-      icon: UserIcon,
     },
     {
       type: "dropdown",
@@ -158,13 +170,23 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     },
     {
       type: "dropdown",
-      label: "SDK Management",
-      icon: CodeBracketIcon,
-      isExpanded: expandedMenus.sdk,
-      onClick: () => toggleMenu("sdk"),
+      label: "System & Settings",
+      icon: Cog6ToothIcon,
+      isExpanded: expandedMenus.settings,
+      onClick: () => toggleMenu("settings"),
       subItems: [
         {
-          label: "UI Components",
+          label: "Users",
+          path: "/users",
+          icon: UserIcon,
+        },
+        {
+          label: "Privacy & Security",
+          path: "/privacy",
+          icon: ShieldCheckIcon,
+        },
+        {
+          label: "SDK Management",
           path: "/sdk/components",
           icon: CodeBracketIcon,
         },
@@ -172,6 +194,40 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           label: "Theme Settings",
           path: "/sdk/theme",
           icon: Cog6ToothIcon,
+        },
+      ],
+    },
+    {
+      type: "dropdown",
+      label: "Reports & Audit",
+      icon: DocumentChartBarIcon,
+      isExpanded: expandedMenus.audit,
+      onClick: () => toggleMenu("audit"),
+      subItems: [
+        {
+          label: "Reports",
+          path: "/reports",
+          icon: DocumentChartBarIcon,
+        },
+        {
+          label: "Point Transactions",
+          path: "/audit/points",
+          icon: CurrencyDollarIcon,
+        },
+        {
+          label: "Admin Actions",
+          path: "/audit/admin",
+          icon: UserIcon,
+        },
+        {
+          label: "System Logs",
+          path: "/audit/system",
+          icon: CodeBracketIcon,
+        },
+        {
+          label: "API Logs",
+          path: "/audit/api",
+          icon: CommandLineIcon,
         },
       ],
     },

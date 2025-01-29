@@ -27,6 +27,10 @@ import ThemeSettings from "./pages/sdk/ThemeSettings";
 import SMS from "./pages/communications/SMS";
 import Email from "./pages/communications/Email";
 import EmailTemplates from "./pages/communications/EmailTemplates";
+import PointTransactions from "./pages/audit/PointTransactions";
+import AdminActions from "./pages/audit/AdminActions";
+import SystemLogs from "./pages/audit/SystemLogs";
+import ApiLogs from "./pages/audit/ApiLogs";
 
 const App = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -258,6 +262,46 @@ const App = () => {
                 <ProtectedRoute>
                   <Layout>
                     <EmailTemplates />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/audit/points"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <PointTransactions />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/audit/admin"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <AdminActions />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/audit/system"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <SystemLogs />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/audit/api"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ApiLogs />
                   </Layout>
                 </ProtectedRoute>
               }

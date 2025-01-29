@@ -73,6 +73,72 @@ const dummyOffers = [
     }
 ];
 
+const dummyBrands = [
+    {
+        id: 1,
+        name: "KFC",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/b/bf/KFC_logo.svg/100px-KFC_logo.svg.png",
+        code: "KH123",
+        category: "Food",
+        createdOn: "20-01-25",
+        status: "Active"
+    },
+    {
+        id: 2,
+        name: "McDonald's",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/McDonald%27s_Golden_Arches.svg/100px-McDonald%27s_Golden_Arches.svg.png",
+        code: "KH124",
+        category: "Food",
+        createdOn: "20-01-25",
+        status: "Active"
+    },
+    // Add more dummy brands...
+];
+
+const dummyCategories = [
+    {
+        id: 1,
+        title: "Food",
+        image: "/icons/food.svg",
+        code: "KH123",
+        description: "For Payment",
+        createdOn: "20-01-25"
+    },
+    {
+        id: 2,
+        title: "Retail",
+        image: "/icons/retail.svg",
+        code: "KH124",
+        description: "For Shopping",
+        createdOn: "20-01-25"
+    },
+    // Add more dummy categories...
+];
+
+const dummyApps = [
+    {
+        id: 1,
+        name: "Khedmah Mobile",
+        icon: "/icons/mobile.svg",
+        description: "Mobile application for customers",
+        status: "Active"
+    },
+    {
+        id: 2,
+        name: "Khedmah Business",
+        icon: "/icons/business.svg",
+        description: "Business management application",
+        status: "Active"
+    },
+    {
+        id: 3,
+        name: "Khedmah Merchant",
+        icon: "/icons/merchant.svg",
+        description: "Merchant portal application",
+        status: "Inactive"
+    }
+];
+
 const useStore = create((set) => ({
     // Points Criteria State
     pointsCriteria: [],
@@ -90,15 +156,15 @@ const useStore = create((set) => ({
     setCustomers: (customers) => set({ customers }),
 
     // Apps State
-    apps: [],
+    apps: dummyApps,
     setApps: (apps) => set({ apps }),
 
     // Categories State
-    categories: [],
+    categories: dummyCategories,
     setCategories: (categories) => set({ categories }),
 
     // Brands State
-    brands: [],
+    brands: dummyBrands,
     setBrands: (brands) => set({ brands }),
 
     // Merchant Coupons State
@@ -122,6 +188,41 @@ const useStore = create((set) => ({
                 offer.id === updatedOffer.id ? updatedOffer : offer
             ),
         })),
+
+    deleteOffer: (offerId) =>
+        set((state) => ({
+            offers: state.offers.filter((offer) => offer.id !== offerId)
+        })),
+
+    bulkDeleteOffers: (offerIds) =>
+        set((state) => ({
+            offers: state.offers.filter((offer) => !offerIds.includes(offer.id))
+        })),
+
+    addBrand: (brand) =>
+        set((state) => ({
+            brands: [...state.brands, { ...brand, id: state.brands.length + 1 }]
+        })),
+
+    updateBrand: (updatedBrand) =>
+        set((state) => ({
+            brands: state.brands.map((brand) =>
+                brand.id === updatedBrand.id ? updatedBrand : brand
+            ),
+        })),
+
+    deleteBrand: (brandId) =>
+        set((state) => ({
+            brands: state.brands.filter((brand) => brand.id !== brandId)
+        })),
+
+    isAuthenticated: false,
+    login: (credentials) => {
+        set({ isAuthenticated: true });
+    },
+    logout: () => {
+        set({ isAuthenticated: false });
+    },
 }))
 
 export default useStore 

@@ -1,5 +1,6 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import useStore from "../store/useStore";
+import { useState } from "react";
 
 const DUMMY_APPS = [
   { id: "app1", name: "Khedmah Mobile" },
@@ -14,12 +15,36 @@ const DUMMY_TIERS = [
 ];
 
 const AddOfferModal = ({ isOpen, onClose, editingOffer }) => {
+  const [errors, setErrors] = useState({});
   const addOffer = useStore((state) => state.addOffer);
   const updateOffer = useStore((state) => state.updateOffer);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const validateForm = (data) => {
+    const newErrors = {};
+    if (!data.title?.trim()) newErrors.title = "Title is required";
+    if (!data.discountCode?.trim())
+      newErrors.discountCode = "Discount code is required";
+    if (!data.percentage) newErrors.percentage = "Percentage is required";
+    else if (data.percentage < 0 || data.percentage > 100)
+      newErrors.percentage = "Percentage must be between 0 and 100";
+    if (!data.tierRequired) newErrors.tierRequired = "Tier is required";
+    if (!data.app) newErrors.app = "App is required";
+    if (!data.validFrom) newErrors.validFrom = "Valid from date is required";
+    if (!data.validTo) newErrors.validTo = "Valid to date is required";
+    if (
+      data.validFrom &&
+      data.validTo &&
+      new Date(data.validFrom) > new Date(data.validTo)
+    ) {
+      newErrors.validTo = "End date must be after start date";
+    }
+
+    return newErrors;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const offerData = {
@@ -27,20 +52,45 @@ const AddOfferModal = ({ isOpen, onClose, editingOffer }) => {
       icon: formData.get("icon"),
       discountCode: formData.get("discountCode"),
       description: formData.get("description"),
-      percentage: formData.get("percentage"),
+      percentage: Number(formData.get("percentage")),
       tierRequired: formData.get("tierRequired"),
       app: formData.get("app"),
       validFrom: formData.get("validFrom"),
       validTo: formData.get("validTo"),
     };
 
-    if (editingOffer) {
-      updateOffer({ ...offerData, id: editingOffer.id });
-    } else {
-      addOffer({ ...offerData, id: Date.now() });
+    const formErrors = validateForm(offerData);
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);
+      return;
     }
-    onClose();
+
+    try {
+      if (editingOffer) {
+        updateOffer({ ...offerData, id: editingOffer.id });
+        onSuccess("Offer updated successfully");
+      } else {
+        addOffer({ ...offerData, id: Date.now() });
+        onSuccess("Offer added successfully");
+      }
+      onClose();
+    } catch (error) {
+      setErrors({ submit: "Failed to save offer. Please try again." });
+    }
   };
+
+  // Add error display component
+  const ErrorMessage = ({ message }) =>
+    message ? <p className="text-red-500 text-xs mt-1">{message}</p> : null;
+
+  // Add general error message display
+  {
+    errors.submit && (
+      <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+        <p className="text-sm text-red-600">{errors.submit}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -66,9 +116,12 @@ const AddOfferModal = ({ isOpen, onClose, editingOffer }) => {
               type="text"
               name="title"
               placeholder="Enter Title"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className={`w-full border ${
+                errors.title ? "border-red-500" : "border-gray-300"
+              } rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500`}
               defaultValue={editingOffer?.title}
             />
+            <ErrorMessage message={errors.title} />
           </div>
 
           <div>
@@ -92,9 +145,12 @@ const AddOfferModal = ({ isOpen, onClose, editingOffer }) => {
               type="text"
               name="discountCode"
               placeholder="Enter Discount Code"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className={`w-full border ${
+                errors.discountCode ? "border-red-500" : "border-gray-300"
+              } rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500`}
               defaultValue={editingOffer?.discountCode}
             />
+            <ErrorMessage message={errors.discountCode} />
           </div>
 
           <div>
@@ -118,9 +174,12 @@ const AddOfferModal = ({ isOpen, onClose, editingOffer }) => {
               type="number"
               name="percentage"
               placeholder="Enter Percentage"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className={`w-full border ${
+                errors.percentage ? "border-red-500" : "border-gray-300"
+              } rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500`}
               defaultValue={editingOffer?.percentage}
             />
+            <ErrorMessage message={errors.percentage} />
           </div>
 
           <div>
@@ -129,7 +188,9 @@ const AddOfferModal = ({ isOpen, onClose, editingOffer }) => {
             </label>
             <select
               name="tierRequired"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className={`w-full border ${
+                errors.tierRequired ? "border-red-500" : "border-gray-300"
+              } rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500`}
               defaultValue={editingOffer?.tierRequired}
             >
               <option value="">Select tier</option>
@@ -139,6 +200,7 @@ const AddOfferModal = ({ isOpen, onClose, editingOffer }) => {
                 </option>
               ))}
             </select>
+            <ErrorMessage message={errors.tierRequired} />
           </div>
 
           <div>
@@ -147,7 +209,9 @@ const AddOfferModal = ({ isOpen, onClose, editingOffer }) => {
             </label>
             <select
               name="app"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className={`w-full border ${
+                errors.app ? "border-red-500" : "border-gray-300"
+              } rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500`}
               defaultValue={editingOffer?.app}
             >
               <option value="">Select app</option>
@@ -157,6 +221,7 @@ const AddOfferModal = ({ isOpen, onClose, editingOffer }) => {
                 </option>
               ))}
             </select>
+            <ErrorMessage message={errors.app} />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -167,9 +232,12 @@ const AddOfferModal = ({ isOpen, onClose, editingOffer }) => {
               <input
                 type="date"
                 name="validFrom"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                className={`w-full border ${
+                  errors.validFrom ? "border-red-500" : "border-gray-300"
+                } rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500`}
                 defaultValue={editingOffer?.validFrom}
               />
+              <ErrorMessage message={errors.validFrom} />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -178,9 +246,12 @@ const AddOfferModal = ({ isOpen, onClose, editingOffer }) => {
               <input
                 type="date"
                 name="validTo"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                className={`w-full border ${
+                  errors.validTo ? "border-red-500" : "border-gray-300"
+                } rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500`}
                 defaultValue={editingOffer?.validTo}
               />
+              <ErrorMessage message={errors.validTo} />
             </div>
           </div>
 

@@ -212,8 +212,8 @@ const CustomerProfile = ({ customer }) => {
                 </p>
               </div>
               <div className="text-sm text-gray-500">
-                <p>Lifetime spend > $10,000</p>
-                <p>Average order > $500</p>
+                <p>Lifetime spend &gt; $10,000</p>
+                <p>Average order &gt; $500</p>
               </div>
             </div>
           </div>
@@ -240,8 +240,8 @@ const CustomerProfile = ({ customer }) => {
                 </p>
               </div>
               <div className="text-sm text-gray-500">
-                <p>>2 purchases per month</p>
-                <p>>24 purchases per year</p>
+                <p>&gt;2 purchases per month</p>
+                <p>&gt;24 purchases per year</p>
               </div>
             </div>
           </div>

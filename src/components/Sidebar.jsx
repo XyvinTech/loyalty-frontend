@@ -15,53 +15,167 @@ import {
   UsersIcon,
   ShieldCheckIcon,
   UserIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+  Cog6ToothIcon,
+  ChatBubbleLeftRightIcon,
+  ExclamationCircleIcon,
+  DocumentChartBarIcon,
+  BellIcon,
+  CodeBracketIcon,
+  EnvelopeIcon,
 } from "@heroicons/react/24/outline";
 import useStore from "../store/useStore";
-
-const navItems = [
-  { path: "/dashboard", name: "Dashboard", icon: ChartBarIcon },
-  {
-    path: "/points-criteria",
-    name: "Points Criteria",
-    icon: CurrencyDollarIcon,
-  },
-  { path: "/transactions", name: "Transactions", icon: ArrowPathIcon },
-  {
-    name: "Customers",
-    path: "/customers",
-    icon: UsersIcon,
-    submenu: [
-      { name: "All Customers", path: "/customers" },
-      { name: "VIP Customers", path: "/customers?segment=vip" },
-      { name: "At Risk", path: "/customers?segment=at-risk" },
-      { name: "New Customers", path: "/customers?segment=new" },
-    ],
-  },
-  { path: "/apps", name: "Apps", icon: DevicePhoneMobileIcon },
-  { path: "/categories", name: "Categories", icon: TagIcon },
-  { path: "/brands", name: "Brands", icon: BuildingStorefrontIcon },
-  { path: "/offers", name: "Offers", icon: TicketIcon },
-  { path: "/tiers", name: "Tiers", icon: TrophyIcon },
-  {
-    path: "/privacy",
-    name: "Privacy & Security",
-    icon: ShieldCheckIcon,
-  },
-  {
-    path: "/users",
-    name: "Users",
-    icon: UserIcon,
-  },
-];
+import { useState } from "react";
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
   const navigate = useNavigate();
   const logout = useStore((state) => state.logout);
+  const [expandedMenus, setExpandedMenus] = useState({
+    offers: false,
+    masterData: false,
+    support: false,
+    communications: false,
+    sdk: false,
+  });
 
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
+
+  const toggleMenu = (menu) => {
+    setExpandedMenus((prev) => ({
+      ...prev,
+      [menu]: !prev[menu],
+    }));
+  };
+
+  const navItems = [
+    { path: "/dashboard", name: "Dashboard", icon: ChartBarIcon },
+    {
+      path: "/points-criteria",
+      name: "Points Criteria",
+      icon: CurrencyDollarIcon,
+    },
+    { path: "/transactions", name: "Transactions", icon: ArrowPathIcon },
+    {
+      name: "Customers",
+      path: "/customers",
+      icon: UsersIcon,
+    },
+    {
+      type: "dropdown",
+      label: "Master Data",
+      icon: Cog6ToothIcon,
+      isExpanded: expandedMenus.masterData,
+      onClick: () => toggleMenu("masterData"),
+      subItems: [
+        {
+          label: "Tiers",
+          path: "/tiers",
+          icon: TrophyIcon,
+        },
+        {
+          label: "Categories",
+          path: "/categories",
+          icon: TagIcon,
+        },
+        {
+          label: "Brands",
+          path: "/brands",
+          icon: BuildingStorefrontIcon,
+        },
+        {
+          label: "Apps",
+          path: "/apps",
+          icon: DevicePhoneMobileIcon,
+        },
+      ],
+    },
+    {
+      type: "dropdown",
+      label: "Offers",
+      icon: TagIcon,
+      isExpanded: expandedMenus.offers,
+      onClick: () => toggleMenu("offers"),
+      subItems: [
+        {
+          label: "Merchant Offers",
+          path: "/merchant-offers",
+          icon: TicketIcon,
+        },
+        {
+          label: "Khedmah Coupons",
+          path: "/khedmah-coupons",
+          icon: TagIcon,
+        },
+      ],
+    },
+    {
+      path: "/support",
+      name: "Customer Support",
+      icon: ChatBubbleLeftRightIcon,
+    },
+    {
+      path: "/reports",
+      name: "Reports",
+      icon: DocumentChartBarIcon,
+    },
+    {
+      path: "/privacy",
+      name: "Privacy & Security",
+      icon: ShieldCheckIcon,
+    },
+    {
+      path: "/users",
+      name: "Users",
+      icon: UserIcon,
+    },
+    {
+      type: "dropdown",
+      label: "Communications",
+      icon: BellIcon,
+      isExpanded: expandedMenus.communications,
+      onClick: () => toggleMenu("communications"),
+      subItems: [
+        {
+          label: "Push Notifications",
+          path: "/notifications",
+          icon: BellIcon,
+        },
+        {
+          label: "SMS",
+          path: "/communications/sms",
+          icon: ChatBubbleLeftRightIcon,
+        },
+        {
+          label: "Email",
+          path: "/communications/email",
+          icon: EnvelopeIcon,
+        },
+      ],
+    },
+    {
+      type: "dropdown",
+      label: "SDK Management",
+      icon: CodeBracketIcon,
+      isExpanded: expandedMenus.sdk,
+      onClick: () => toggleMenu("sdk"),
+      subItems: [
+        {
+          label: "UI Components",
+          path: "/sdk/components",
+          icon: CodeBracketIcon,
+        },
+        {
+          label: "Theme Settings",
+          path: "/sdk/theme",
+          icon: Cog6ToothIcon,
+        },
+      ],
+    },
+  ];
 
   return (
     <aside
@@ -106,22 +220,67 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         </div>
 
         <nav className="flex-1 overflow-y-auto py-4">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) =>
-                `flex items-center px-4 py-3 text-sm font-medium transition-all duration-200 ${
-                  isActive
-                    ? "text-white bg-green-700/90 border-r-4 border-white"
-                    : "text-gray-300 hover:bg-green-700/50 hover:text-white"
-                } ${!isOpen && "justify-center"}`
-              }
-            >
-              <item.icon className="w-5 h-5 flex-shrink-0" />
-              {isOpen && <span className="ml-3">{item.name}</span>}
-            </NavLink>
-          ))}
+          {navItems.map((item) =>
+            item.type === "dropdown" ? (
+              <div key={item.label}>
+                <button
+                  onClick={item.onClick}
+                  className={`w-full flex items-center justify-between px-4 py-3 text-sm font-medium transition-all duration-200 ${
+                    item.isExpanded
+                      ? "text-white bg-green-700/90"
+                      : "text-gray-300 hover:bg-green-700/50 hover:text-white"
+                  } ${!isOpen && "justify-center"}`}
+                >
+                  <div className="flex items-center gap-3">
+                    <item.icon className="w-5 h-5" />
+                    {isOpen && item.label}
+                  </div>
+                  {isOpen &&
+                    (item.isExpanded ? (
+                      <ChevronDownIcon className="w-4 h-4" />
+                    ) : (
+                      <ChevronRightIcon className="w-4 h-4" />
+                    ))}
+                </button>
+
+                {item.isExpanded && (
+                  <div className="ml-4 mt-2 space-y-1">
+                    {item.subItems.map((subItem) => (
+                      <NavLink
+                        key={subItem.path}
+                        to={subItem.path}
+                        className={({ isActive }) =>
+                          `flex items-center gap-3 px-4 py-2 text-sm font-medium rounded-lg ${
+                            isActive
+                              ? "text-white bg-green-800"
+                              : "text-gray-200 hover:bg-green-700/30 hover:text-white"
+                          }`
+                        }
+                      >
+                        <subItem.icon className="w-4 h-4" />
+                        {subItem.label}
+                      </NavLink>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                className={({ isActive }) =>
+                  `flex items-center px-4 py-3 text-sm font-medium transition-all duration-200 ${
+                    isActive
+                      ? "text-white bg-green-700/90 border-r-4 border-white"
+                      : "text-gray-300 hover:bg-green-700/50 hover:text-white"
+                  } ${!isOpen && "justify-center"}`
+                }
+              >
+                <item.icon className="w-5 h-5 flex-shrink-0" />
+                {isOpen && <span className="ml-3">{item.name}</span>}
+              </NavLink>
+            )
+          )}
         </nav>
 
         <button

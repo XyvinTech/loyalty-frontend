@@ -83,22 +83,26 @@ const Offers = () => {
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedOffers(paginatedOffers.map(offer => offer.id));
+      setSelectedOffers(paginatedOffers.map((offer) => offer.id));
     } else {
       setSelectedOffers([]);
     }
   };
 
   const handleSelectOffer = (offerId) => {
-    setSelectedOffers(prev => 
-      prev.includes(offerId) 
-        ? prev.filter(id => id !== offerId)
+    setSelectedOffers((prev) =>
+      prev.includes(offerId)
+        ? prev.filter((id) => id !== offerId)
         : [...prev, offerId]
     );
   };
 
   const handleBulkDelete = () => {
-    if (window.confirm(`Are you sure you want to delete ${selectedOffers.length} offers?`)) {
+    if (
+      window.confirm(
+        `Are you sure you want to delete ${selectedOffers.length} offers?`
+      )
+    ) {
       setIsLoading(true);
       try {
         bulkDeleteOffers(selectedOffers);
@@ -162,6 +166,33 @@ const Offers = () => {
       </div>
     </div>
   );
+
+  const merchantOffers = [
+    {
+      id: 1,
+      type: "merchant",
+      merchantName: "KFC",
+      logo: "kfc_logo_url",
+      offerTitle: "20% Off on Bucket Meals",
+      pointsRequired: 500,
+      redemptionProcess: {
+        type: "pin_based",
+        steps: [
+          "Customer redeems offer using points",
+          "System generates unique PIN code",
+          "Customer shows PIN at KFC counter",
+          "Merchant validates PIN through their portal",
+          "Discount applied to customer's order",
+        ],
+      },
+      validityPeriod: "30 days",
+      termsAndConditions: [
+        "Valid at all KFC Oman branches",
+        "Cannot be combined with other offers",
+        "Valid on dine-in and takeaway only",
+      ],
+    },
+  ];
 
   return (
     <div className="p-8">

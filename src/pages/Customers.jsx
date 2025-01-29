@@ -7,11 +7,14 @@ import {
   ChevronUpDownIcon,
   TrashIcon,
   ArrowDownTrayIcon,
+  FunnelIcon,
+  ChevronDownIcon,
 } from "@heroicons/react/24/outline";
 import useStore from "../store/useStore";
 import AddCustomerModal from "../components/AddCustomerModal";
 import EditCustomerModal from "../components/EditCustomerModal";
 import { Link } from "react-router-dom";
+import CustomerDetailsModal from "../components/support/CustomerDetailsModal";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -26,6 +29,8 @@ const Customers = () => {
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [editingCustomer, setEditingCustomer] = useState(null);
   const { customers, bulkDeleteCustomers } = useStore();
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [filterTier, setFilterTier] = useState("all");
 
   const handleSort = (key) => {
     setSortConfig({
@@ -123,6 +128,19 @@ const Customers = () => {
       </div>
     </th>
   );
+
+  const filteredCustomers = customers.filter((customer) => {
+    const matchesSearch =
+      customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      customer.phone.includes(searchTerm) ||
+      customer.email.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesTier =
+      filterTier === "all" ||
+      customer.tier.toLowerCase() === filterTier.toLowerCase();
+
+    return matchesSearch && matchesTier;
+  });
 
   return (
     <div className="p-8">
@@ -310,6 +328,14 @@ const Customers = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
+
+      {selectedCustomer && (
+        <CustomerDetailsModal
+          customer={selectedCustomer}
+          isOpen={!!selectedCustomer}
+          onClose={() => setSelectedCustomer(null)}
+        />
+      )}
     </div>
   );
 };

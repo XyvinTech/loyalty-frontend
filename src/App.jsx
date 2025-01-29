@@ -17,6 +17,16 @@ import CustomerDetailsPage from "./pages/CustomerDetailsPage";
 import Privacy from "./pages/Privacy";
 import useStore from "./store/useStore";
 import Users from "./pages/Users";
+import MerchantOffers from "./pages/MerchantOffers";
+import KhedmahCoupons from "./pages/KhedmahCoupons";
+import Support from "./pages/Support";
+import Reports from "./pages/Reports";
+import PushNotifications from "./pages/notifications/PushNotifications";
+import UIComponents from "./pages/sdk/UIComponents";
+import ThemeSettings from "./pages/sdk/ThemeSettings";
+import SMS from "./pages/communications/SMS";
+import Email from "./pages/communications/Email";
+import EmailTemplates from "./pages/communications/EmailTemplates";
 
 const App = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -146,6 +156,108 @@ const App = () => {
                 <ProtectedRoute>
                   <Layout>
                     <Users />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/merchant-offers"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <MerchantOffers />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/khedmah-coupons"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <KhedmahCoupons />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Replace old support routes with new ones */}
+            <Route
+              path="/support"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Support />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/reports"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Reports />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/notifications"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <PushNotifications />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/sdk/components"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <UIComponents />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/sdk/theme"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ThemeSettings />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/communications/sms"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <SMS />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/communications/email"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Email />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/communications/email/templates"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <EmailTemplates />
                   </Layout>
                 </ProtectedRoute>
               }

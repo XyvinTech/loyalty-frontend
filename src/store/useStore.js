@@ -300,7 +300,38 @@ const dummyTransactions = [
     }
 ];
 
-const useStore = create((set) => ({
+// Add role-based permissions
+const rolePermissions = {
+    admin: {
+        points: {
+            adjust: true,
+            approve: true,
+            approvalLimit: Infinity,
+            bulkAdjust: true,
+            viewAll: true,
+        },
+    },
+    supervisor: {
+        points: {
+            adjust: true,
+            approve: true,
+            approvalLimit: 5000,
+            bulkAdjust: false,
+            viewAll: true,
+        },
+    },
+    agent: {
+        points: {
+            adjust: true,
+            approve: false,
+            approvalLimit: 1000,
+            bulkAdjust: false,
+            viewAll: false,
+        },
+    },
+};
+
+const useStore = create((set, get) => ({
     // Points Criteria State
     pointsCriteria: [],
     setPointsCriteria: (criteria) => set({ pointsCriteria: criteria }),
@@ -420,19 +451,33 @@ const useStore = create((set) => ({
             brands: state.brands.filter((brand) => brand.id !== brandId)
         })),
 
-    isAuthenticated: localStorage.getItem("isAuthenticated") === "true",
-    user: JSON.parse(localStorage.getItem("user") || "null"),
+    user: null,
+    isAuthenticated: false,
+    permissions: {
+        points: {
+            viewAll: false,
+            approve: false,
+            bulkAdjust: false,
+            approvalLimit: 0,
+        },
+    },
+
+    setUser: (user) => set({ user, isAuthenticated: !!user }),
+
+    setPermissions: (permissions) => set({ permissions }),
+
+    logout: () => set({ user: null, isAuthenticated: false, permissions: {} }),
+
+    // Helper function to check permissions
+    checkPermission: (module, action) => {
+        const permissions = get().permissions;
+        return permissions?.[module]?.[action] || false;
+    },
 
     login: (userData) => {
         localStorage.setItem("isAuthenticated", "true");
         localStorage.setItem("user", JSON.stringify(userData));
         set({ isAuthenticated: true, user: userData });
-    },
-
-    logout: () => {
-        localStorage.removeItem("isAuthenticated");
-        localStorage.removeItem("user");
-        set({ isAuthenticated: false, user: null });
     },
 
     deleteCustomer: (customerId) =>

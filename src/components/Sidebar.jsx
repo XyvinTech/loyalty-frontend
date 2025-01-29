@@ -26,6 +26,7 @@ import {
   EnvelopeIcon,
   ClipboardDocumentListIcon,
   CommandLineIcon,
+  AdjustmentsHorizontalIcon,
 } from "@heroicons/react/24/outline";
 import useStore from "../store/useStore";
 import { useState } from "react";
@@ -35,7 +36,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   const logout = useStore((state) => state.logout);
   const [expandedMenus, setExpandedMenus] = useState({
     offers: false,
-    masterData: false,
+    referenceData: false,
     support: false,
     communications: false,
     sdk: false,
@@ -76,6 +77,16 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           icon: ArrowPathIcon,
         },
         {
+          label: "Point Adjustments",
+          path: "/points/adjustments",
+          icon: AdjustmentsHorizontalIcon,
+        },
+        {
+          label: "Rules & Expiry",
+          path: "/points/rules",
+          icon: Cog6ToothIcon,
+        },
+        {
           label: "Tiers",
           path: "/tiers",
           icon: TrophyIcon,
@@ -108,10 +119,10 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     },
     {
       type: "dropdown",
-      label: "Master Data",
+      label: "Reference Data",
       icon: Cog6ToothIcon,
-      isExpanded: expandedMenus.masterData,
-      onClick: () => toggleMenu("masterData"),
+      isExpanded: expandedMenus.referenceData,
+      onClick: () => toggleMenu("referenceData"),
       subItems: [
         {
           label: "Categories",
@@ -191,8 +202,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           icon: ShieldCheckIcon,
         },
         {
-          label: "SDK Management",
-          path: "/sdk/components",
+          label: "SDK & API Access",
+          path: "/settings/sdk",
           icon: CodeBracketIcon,
         },
         {

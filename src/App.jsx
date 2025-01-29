@@ -32,6 +32,10 @@ import AdminActions from "./pages/audit/AdminActions";
 import SystemLogs from "./pages/audit/SystemLogs";
 import ApiLogs from "./pages/audit/ApiLogs";
 import ReferralProgram from "./pages/points/ReferralProgram";
+import PointsManagement from "./pages/points/PointsManagement";
+import SDKManagement from "./pages/sdk/SDKManagement";
+import { Toaster } from "react-hot-toast";
+import PointAdjustments from "./pages/points/PointAdjustments";
 
 const App = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -317,9 +321,40 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/points/adjustments"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <PointAdjustments />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/points/rules"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <PointsManagement />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings/sdk"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <SDKManagement />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </main>
       </div>
+      <Toaster position="top-right" />
     </BrowserRouter>
   );
 };

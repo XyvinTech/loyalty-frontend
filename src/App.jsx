@@ -36,6 +36,7 @@ import PointsManagement from "./pages/points/PointsManagement";
 import SDKManagement from "./pages/sdk/SDKManagement";
 import { Toaster } from "react-hot-toast";
 import PointAdjustments from "./pages/points/PointAdjustments";
+import AIChat from "./pages/AIChat";
 
 const App = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -347,6 +348,16 @@ const App = () => {
                 <ProtectedRoute>
                   <Layout>
                     <SDKManagement />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/ai-chat"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <AIChat />
                   </Layout>
                 </ProtectedRoute>
               }
